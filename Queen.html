@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUEEN | The Kings of Rock</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --bg-color: #000000;
+            --text-main: #FFFFFF;
+            --text-muted: #A0A0A0;
+            --gold-accent: #C5A059;
+            --chrome-dark: #1A1A1A;
+            --chrome-light: #333333;
+            
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, .serif {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            font-weight: 300;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .gold-line {
+            width: 60px;
+            height: 2px;
+            background-color: var(--gold-accent);
+            margin: 2rem 0;
+            display: block;
+        }
+
+        .gold-line.center {
+            margin: 2rem auto;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+
+        .q-pulse {
+            font-family: var(--font-serif);
+            font-size: 5rem;
+            color: var(--gold-accent);
+            animation: pulse 1.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.5; text-shadow: 0 0 10px rgba(197, 160, 89, 0); }
+            100% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 30px rgba(197, 160, 89, 0.4); }
+        }
+
+        /* --- HERO SECTION --- */
+        #hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: url('https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat fixed;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,1) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-size: clamp(4rem, 12vw, 10rem);
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+        }
+
+        /* --- SECTION: LEGENDS --- */
+        #legends {
+            padding: 8rem 5%;
+            background: var(--bg-color);
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            max-width: 600px;
+        }
+
+        .section-header.center {
+            margin: 0 auto 4rem auto;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--text-main);
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .member-card {
+            position: relative;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            background: var(--chrome-dark);
+            cursor: crosshair;
+            border: 1px solid rgba(197, 160, 89, 0.1);
+        }
+
+        .member-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+        }
+
+        .member-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            opacity: 1; 
+        }
+
+        .member-details {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .member-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .member-card p {
+            color: var(--gold-accent);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        /* Desktop Hover Effects */
+        @media (hover: hover) {
+            .member-card:hover .member-img {
+                transform: scale(1.05);
+                filter: grayscale(0%) contrast(1.1);
+            }
+            .member-card:hover .member-details {
+                max-height: 150px;
+            }
+            .member-card:hover p {
+                transform: translateY(0);
+                opacity: 1;
+                transition-delay: 0.1s;
+            }
+        }
+
+        /* --- SECTION: ANTHEMS --- */
+        #anthems {
+            padding: 6rem 5%;
+            background: var(--bg-color);
+            border-top: 1px solid var(--chrome-light);
+            border-bottom: 1px solid var(--chrome-light);
+            overflow: hidden;
+        }
+
+        .anthem-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .anthem-item {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 6vw, 5rem);
+            color: var(--chrome-light);
+            text-transform: uppercase;
+            line-height: 1;
+            cursor: crosshair;
+            transition: color 0.4s ease, transform 0.4s ease;
+            white-space: nowrap;
+        }
+
+        .anthem-desc {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            color: var(--text-main);
+            display: block;
+            margin-top: 0.5rem;
+            letter-spacing: 0.05em;
+            text-transform: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Desktop Hover für Anthems */
+        @media (hover: hover) {
+            .anthem-item:hover {
+                color: var(--gold-accent);
+                transform: translateX(20px);
+            }
+            .anthem-item:hover .anthem-desc {
+                opacity: 1;
+            }
+        }
+
+        /* --- SECTION: TIMELINE --- */
+        #timeline {
+            padding: 8rem 5%;
+            background: var(--chrome-dark);
+            position: relative;
+        }
+
+        .timeline-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            height: 100%;
+            width: 2px;
+            background: rgba(197, 160, 89, 0.2);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 5rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            width: 12px;
+            height: 12px;
+            background: var(--bg-color);
+            border: 2px solid var(--gold-accent);
+            border-radius: 50%;
+            transition: background 0.4s ease;
+        }
+
+        .timeline-item:hover::before {
+            background: var(--gold-accent);
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+        }
+
+        .timeline-year {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            color: var(--gold-accent);
+            line-height: 1;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .timeline-content h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 4rem 5%;
+            text-align: center;
+            background: var(--bg-color);
+            border-top: 1px solid var(--chrome-light);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* --- BULLETPROOF ANIMATIONS --- */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Desktop Adjustments Timeline */
+        @media (min-width: 768px) {
+            .timeline-container::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .timeline-item {
+                width: 50%;
+                padding-left: 0;
+            }
+            .timeline-item:nth-child(odd) {
+                left: 0;
+                padding-right: 60px;
+                text-align: right;
+            }
+            .timeline-item:nth-child(even) {
+                left: 50%;
+                padding-left: 60px;
+            }
+            .timeline-item:nth-child(odd)::before {
+                left: auto;
+                right: -6px;
+            }
+            .timeline-item:nth-child(even)::before {
+                left: -6px;
+            }
+        }
+
+        /* =========================================
+           MOBILE OPTIMIZATION (Perfektioniert)
+           ========================================= */
+        @media (max-width: 768px) {
+            
+            /* Weniger vertikaler Leerraum (Pacing optimiert) */
+            #legends, #timeline {
+                padding: 4rem 5%;
+            }
+            
+            #anthems {
+                padding: 4rem 5%;
+            }
+
+            /* Typografie auf dem Handy zähmen */
+            .hero-title {
+                font-size: 3.5rem; 
+            }
+            .hero-subtitle {
+                font-size: 0.85rem;
+                letter-spacing: 0.2em;
+            }
+            .section-header {
+                margin-bottom: 2.5rem;
+            }
+
+            /* BAND KARTEN: Texte sofort einblenden & Kontrast erhöhen */
+            .member-overlay {
+                background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+                padding: 1.5rem;
+            }
+            .member-details {
+                max-height: 200px; /* Vollständig offen */
+            }
+            .member-card h3 {
+                font-size: 1.8rem;
+            }
+            .member-card p {
+                transform: translateY(0);
+                opacity: 1;
+                font-size: 0.85rem;
+            }
+
+            /* HYMNEN: Kein seitliches Scrollen, Text direkt lesbar */
+            .anthem-item {
+                white-space: normal; /* Erlaubt Umbrüche */
+                font-size: 2.2rem;
+                margin-bottom: 2rem;
+                color: var(--text-main); /* Direkt weiß, da kein Hover existiert */
+                line-height: 1.1;
+            }
+            .anthem-desc {
+                opacity: 1; /* Beschreibung ist sofort da */
+                margin-top: 0.8rem;
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                line-height: 1.5;
+            }
+
+            /* TIMELINE: Enger an den Rand ziehen */
+            .timeline-year {
+                font-size: 2.2rem;
+            }
+            .timeline-item {
+                padding-left: 45px;
+                margin-bottom: 3.5rem;
+            }
+            .timeline-container::before {
+                left: 12px;
+            }
+            .timeline-item::before {
+                left: 7px;
+                width: 10px;
+                height: 10px;
+                top: 12px;
+            }
+            .timeline-content h4 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="q-pulse">Q</div>
+    </div>
+
+    <main>
+        <!-- HERO -->
+        <section id="hero">
+            <div class="hero-content reveal-element active">
+                <div class="hero-subtitle">Die britische Monarchie des Rock</div>
+                <h1 class="hero-title">Queen</h1>
+                <div class="hero-subtitle" style="color: var(--text-main); font-size: 1rem;">Wir spielen nicht nach den Regeln.</div>
+            </div>
+        </section>
+
+        <!-- LEGENDS -->
+        <section id="legends">
+            <div class="section-header reveal-element">
+                <h2 class="section-title">Die Band</h2>
+                <span class="gold-line"></span>
+                <p>Vier massive Egos. Vier brillante Songwriter. Ein gemeinsames Monster.</p>
+            </div>
+
+            <div class="grid-cards">
+                <!-- Freddie -->
+                <div class="member-card reveal-element" style="transition-delay: 0.1s;">
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=800" alt="Freddie Mercury" class="member-img">
+                    <div class="member-overlay">
+                        <h3>Freddie Mercury</h3>
+                        <div class="member-details">
+                            <p>Gesang. Piano. Die absolute Präsenz.<br>Ein Frontmann, der Stadien mit einer Handbewegung kontrolliert.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brian -->
+                <div class="member-card reveal-element" style="transition-delay: 0.2s;">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800" alt="Brian May" class="member-img">
+                    <div class="member-overlay">
+                        <h3>Brian May</h3>
+                        <div class="member-details">
+                            <p>Gitarre. Astrophysiker.<br>Seine Red Special baut eine gnadenlose Wand aus harmonischen Riffs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roger -->
+                <div class="member-card reveal-element" style="transition-delay: 0.3s;">
+                    <img src="https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&q=80&w=800" alt="Roger Taylor" class="member-img">
+                    <div class="member-overlay">
+                        <h3>Roger Taylor</h3>
+                        <div class="member-details">
+                            <p>Drums. Der rohe Beat.<br>Makellose hohe Harmonien und der Motor, der die Band unaufhaltsam antreibt.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- John -->
+                <div class="member-card reveal-element" style="transition-delay: 0.4s;">
+                    <img src="https://images.unsplash.com/photo-1550291652-6ea9114a47b1?auto=format&fit=crop&q=80&w=800" alt="John Deacon" class="member-img">
+                    <div class="member-overlay">
+                        <h3>John Deacon</h3>
+                        <div class="member-details">
+                            <p>Bass. Das Fundament.<br>Das stille Genie hinter Welthits wie 'Another One Bites the Dust'.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- THE ANTHEMS -->
+        <section id="anthems">
+            <div class="section-header reveal-element">
+                <h2 class="section-title">Kein Genre ist sicher</h2>
+                <span class="gold-line"></span>
+                <p>Oper. Disco. Hard Rock. Sie zerstörten Grenzen und schufen Hymnen für die Ewigkeit.</p>
+            </div>
+            
+            <div class="anthem-list reveal-element">
+                <div class="anthem-item">Bohemian Rhapsody <span class="anthem-desc">Sechs Minuten Größenwahn. Keine Refrains. Ein globales Phänomen.</span></div>
+                <div class="anthem-item">We Will Rock You <span class="anthem-desc">Zwei Stampfer. Ein Klatscher. Das Publikum wird zum Instrument.</span></div>
+                <div class="anthem-item">Another One Bites The Dust <span class="anthem-desc">Disko-Funk trifft Rock. Der meistverkaufte Queen-Song in den USA.</span></div>
+                <div class="anthem-item">Don't Stop Me Now <span class="anthem-desc">Pures Adrenalin. 200 bpm. Quecksilber in musikalischer Form.</span></div>
+            </div>
+        </section>
+
+        <!-- TIMELINE -->
+        <section id="timeline">
+            <div class="section-header reveal-element text-center center">
+                <h2 class="section-title">Meilensteine</h2>
+                <span class="gold-line center"></span>
+                <p>Geschichte wird nicht geschrieben. Sie wird gespielt.</p>
+            </div>
+
+            <div class="timeline-container">
+                <div class="timeline-item reveal-element">
+                    <span class="timeline-year">1970</span>
+                    <div class="timeline-content">
+                        <h4>Die Formation</h4>
+                        <p>Die Band 'Smile' verliert ihren Sänger. Farrokh Bulsara übernimmt das Mikrofon, nennt sich Freddie Mercury und tauft die Band 'Queen'. London bebt.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal-element">
+                    <span class="timeline-year">1973</span>
+                    <div class="timeline-content">
+                        <h4>Queen I</h4>
+                        <p>Das Debütalbum erscheint. Roh. Hungrig. Kompromisslos. Der Slogan auf dem Cover: "No Synthesizers were used on this album."</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal-element">
+                    <span class="timeline-year">1975</span>
+                    <div class="timeline-content">
+                        <h4>A Night At The Opera</h4>
+                        <p>Das bis dato teuerste Album der Musikgeschichte. 'Bohemian Rhapsody' bricht sämtliche Radio-Regeln. Ein Meisterwerk, das Kritiker schockiert und Fans elektrisiert.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal-element">
+                    <span class="timeline-year">1981</span>
+                    <div class="timeline-content">
+                        <h4>Under Pressure</h4>
+                        <p>Eine späte Nacht in einem Studio in Montreux. David Bowie und Queen improvisieren. Ein unsterblicher Basslauf entsteht. Platz 1 in den UK-Charts.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal-element">
+                    <span class="timeline-year">1985</span>
+                    <div class="timeline-content">
+                        <h4>Live Aid</h4>
+                        <p>20 Minuten. Das Wembley Stadion explodiert. Mercury hat 72.000 Menschen und die ganze Welt vor den Fernsehern in der Hand. Die wohl größte Rock-Performance der Geschichte.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal-element">
+                    <span class="timeline-year">1986</span>
+                    <div class="timeline-content">
+                        <h4>The Magic Tour</h4>
+                        <p>Knebworth Park. 120.000 Menschen. Der Helikopter-Anflug. Es wird das letzte Konzert von Queen in der Originalbesetzung sein. Ein monumentales Finale.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p style="color: var(--chrome-light);">Ilay Schönkecht &copy; 2026</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. PRELOADER ENTFERNEN
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none'; 
+                }, 800);
+            }, 300);
+
+            // 2. BULLETPROOF SCROLL REVEAL (Intersection Observer)
+            const revealElements = document.querySelectorAll('.reveal-element');
+            
+            const revealOptions = {
+                threshold: 0,
+                rootMargin: "0px 0px -10% 0px" 
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => {
+                revealOnScroll.observe(el);
+            });
+
+            // 3. PARALLAX FÜR DEN HERO BEREICH (Deaktiviert auf Handys für flüssigeres Scrollen)
+            if (window.innerWidth > 768) {
+                const hero = document.getElementById('hero');
+                const heroContent = hero.querySelector('.hero-content');
+                
+                window.addEventListener('scroll', () => {
+                    let scrollPosition = window.pageYOffset || window.scrollY;
+                    if(scrollPosition < window.innerHeight) {
+                        heroContent.style.transform = `translateY(${scrollPosition * 0.4}px)`;
+                        heroContent.style.opacity = 1 - (scrollPosition / window.innerHeight) * 1.5;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
